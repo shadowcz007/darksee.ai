@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>X-Editor</title>
+    <link rel="icon" href="img/favicon.ico">
+    <style>
+        body {
+            user-select: none;
+            height: 100vh;
+            min-width: 800px;
+            padding: 0;
+            margin: 0;
+            font-family: 'Didact Gothic', serif!important;
+            color: #525252;
+        }
+        
+        .disable-scroll {
+            overflow: hidden;
+        }
+        
+        .dark-mode {
+            background-color: black;
+            color: rgb(235, 235, 235);
+        }
+        
+        .dark-mode h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            color: white;
+        }
+        
+        a {
+            text-decoration: none;
+        }
+        
+        header {
+            padding: 18px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            background: white;
+            width: 100%;
+            box-shadow: 1px 1px 10px 0px #c8c8c8;
+        }
+        
+        .x-logo {
+            background: none!important;
+            border: none!important;
+            color: palevioletred!important;
+            font-weight: 600;
+        }
+        
+        .x-logo::after {
+            content: attr(data-info);
+            font-size: 18;
+            position: absolute;
+            bottom: 12px;
+            color: #1e36e9b0;
+            left: 29px;
+            z-index: -2;
+            border-top: 6px solid #FFEB3B;
+            font-weight: 300;
+        }
+        
+        .x-logo:hover {
+            color: rgb(245, 89, 141);
+            font-weight: 800;
+        }
+        
+        .x-base-background {
+            background-color: #eee;
+            border: 1px dashed #9E9E9E;
+            color: #9E9E9E;
+            padding: 4px 12px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            line-height: 18px;
+            outline: none;
+        }
+        
+        .x-button {
+            cursor: pointer;
+        }
+        
+        .x-button:hover {
+            background-color: white;
+            color: #4a4a4a;
+        }
+        
+        .x-input {
+            outline: none;
+            width: 240px;
+            background: none!important;
+            border: none!important;
+        }
+        
+        .x-input:hover {
+            background-color: white;
+            columns: #4a4a4a;
+        }
+        
+        .x-input-focus {
+            background-color: #eee!important;
+            border: 1px dashed #9E9E9E!important;
+        }
+        
+        .x-count-icon::after {
+            content: attr(count);
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff77a5;
+            width: 20px;
+            font-weight: 800;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 20px;
+            color: white;
+        }
+        
+        #darksee-editor {
+            margin: 98px 12px;
+            user-select: none;
+        }
+        
+        #mask {
+            position: fixed;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            background-color: #040313ab;
+            user-select: none;
+            z-index: 44;
+            display: none;
+        }
+        
+        #save-button {
+            border: none!important;
+        }
+        
+        #new-note-button {
+            position: absolute;
+            right: 240px;
+        }
+        
+        #my-notes-button {
+            position: absolute;
+            right: 120px;
+        }
+    </style>
+    <!--<script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>-->
+    <script src="https://unpkg.com/zangodb@latest/dist/zangodb.min.js"></script>
+    <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+</head>
+
+<body class="">
+    <!--HEADER-->
+    <header>
+        <a class="x-logo x-base-background" href="#" data-info="darksee.ai">智能创作</a>
+        <span style="margin: 0 0 0 98px;">文章 | </span>
+        <input id="title" class="x-input x-base-background" placeholder="请输入标题" autocomplete="off" />
+        <button id="save-button" class="x-button x-base-background">保存</button>
+
+        <button id="new-note-button" class="x-button x-base-background">新建文章</button>
+        <button id="my-notes-button" class="x-button x-base-background">我的文章</button>
+    </header>
+    <!--/HEADER-->
+    <div id="mask"></div>
+    <div id="darksee-editor"></div>
+    <pre id="output"></pre>
+    <!--FOOTER-->
+    <footer>
+
+    </footer>
+    <!--/FOOTER-->
+
+    <!-- JS FILES -->
+    <script src="x-editorjs/dist/editor.js"></script>
+    <script src="editorjs/x-editor-header/dist/bundle.js"></script>
+    <script src="editorjs/x-editor-image/dist/bundle.js"></script>
+    <script src="editorjs/x-editor-video-extract/dist/bundle.js"></script>
+    <script src="editorjs/x-editor-imgs2gif/dist/bundle.js"></script>
+    <script src="editorjs/x-editor-basic-3d/dist/bundle.js"></script>
+    <script src="editorjs/x-editor-smart-cut-image/dist/bundle.js"></script>
+
+    <script src="editorjs/list/dist/bundle.js"></script>
+    <script src="editorjs/map/dist/bundle.js"></script>
+    <script src="editorjs/marker/dist/bundle.js"></script>
+    <script src="js/markdown-browser-0.6.0-beta1/markdown.min.js"></script>
+
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.0"> </script>
+	 -->
+
+
+
+    <!-- Place your code in the script tag below. You can also use an external .js file -->
+    <script>
+        // Notice there is no 'import' statement. 'mobilenet' and 'tf' is
+        // available on the index-page because of the script tag above.
+
+        // data={
+        //         "url": "data:image/png;base64,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",
+        //         "caption": "image",
+        //         "quote": false
+        // 	}
+
+        // const img = document.createElement('img');
+        // img.onload=()=>{
+        // 	// Load the model.
+        // tf.loadGraphModel("web_model/test/model.json").then(model => {
+        // 				// Classify the image.
+        // 				model.classify(img).then(predictions => {
+        // 				console.log('Predictions: ');
+        // 				console.log(predictions);
+        // 				});
+        // });
+        // };
+        // img.src=data.url;
+
+        const _URL = '/admin/api';
+        async function baseFetch(q = "") {
+            let response = await fetch(_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: q,
+                }),
+            });
+            let data = await response.json();
+            data = data.data;
+            return data
+        };
+
+        function formatDate() {
+            let t = new Date(),
+                y = t.getFullYear(),
+                month = (t.getMonth() + 1) < 10 ? '0' + (t.getMonth() + 1) : (t.getMonth() + 1),
+                d = t.getDate() < 10 ? '0' + t.getDate() : t.getDate();
+
+            return [y, month, d].join("")
+        };
+
+        function baseKnowledge(param = {
+            isTop: true,
+            orderBy: "createTime_DESC",
+            skip: 0,
+            first: 10
+        }) {
+            return `
+			query {
+				allKnowledges(
+					where: { 
+						isTop: ${param.isTop}, 
+						isPublic: true,
+						#${param.isTop == true ? `#createTime_gt:"${formatDate()}"` : ""}
+					},
+					skip:${param.skip || 0},
+					first:${param.first || 10},
+					orderBy: "${param.orderBy}") {
+					name
+					createTime
+					category {
+					name
+					}
+					tags {
+					name
+					}
+					brief
+					url
+					image{
+						publicUrl
+					}
+				}
+				}`;
+		};
+
+		async function getKnowledgesByNew() {
+			return await baseFetch(baseKnowledge({
+				isTop: false,
+				orderBy: "createTime_DESC"
+			}));
+		};
+
+
+function parseKnowledgeData(k = {}) {
+    if (k.brief) {
+        k.content = markdown.toHTML(k.brief);
+        let div = document.createElement("div");
+        div.innerHTML = k.content;
+        k.brief = div.querySelector("p").innerText;
+        k.readTime = (Math.round(div.innerText.length / 250) || 1) + "min";
+    };
+    if (k.category) {
+        k.category = Array.from(k.category, c => c.name);
+    };
+    if (k.tags) {
+        k.tags = Array.from(k.tags, c => c.name);
+    };
+    if (k.image) {
+        k.image = k.image ? k.image.publicUrl : null;
+    };
+
+    return k
+};
+    </script>
+
+
+    <script>
+        /* let data = {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "time": 1585124085221,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "blocks": [{
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "type": "basic3d",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "data": {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "id": "82b2f012f383fb219bb77d5cc1e8c25b",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "code": "new Zdog.Ellipse({\n            addTo: this.illo,\n            diameter: 80,\n            translate: { z: -40 },\n            stroke: 40,\n            color: '#636',\n        });\n \nnew Zdog.Shape({\n            addTo: this.illo,\n            path: [\n                { x: 0, y: -32 },\n                { x: 32, y: 32 },\n                { x: -32, y: 32 },\n            ],\n            translate: { z: 40 },\n            color: '#E62',\n            stroke: 12,\n            fill: false,\n        });",
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "success": true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }],
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "version": "2.16.1"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */
+        //let data=
+        //data={}
+
+        // let data=JSON.parse(localStorage.getItem("test"));
+        // data.blocks.push({
+        // 		type: "image",
+        // 		data: {
+        // 		url: "https://cdn.pixabay.com/photo/2017/09/01/21/53/blue-2705642_1280.jpg"
+        // 		}
+        // 	});
+
+        async function init(data) {
+            if (!data) {
+                data = {
+                    time: 1585124085221,
+                    blocks: [],
+                    version: "2.16.1"
+                };
+
+                let knowledges = await getKnowledgesByNew();
+                knowledges.allKnowledges.forEach(k => {
+
+                    k = parseKnowledgeData(k);
+
+                    data.blocks.push({
+                        type: "header",
+                        data: {
+                            text: k.name,
+                            level: 1
+                        }
+                    });
+
+
+                    let imgurl = k.image ? window.location.protocol + "//" + window.location.host + k.image : null;
+
+                    if (imgurl) {
+                        data.blocks.push({
+                            type: "paragraph",
+                            data: {
+                                text: ''
+                            }
+                        });
+                        data.blocks.push({
+                            "type": "image",
+                            "data": {
+                                "url": imgurl,
+                                "caption": "",
+                                "text": "",
+                                "quote": true
+                            }
+                        });
+                    }
+
+                    //console.log(imgurl)
+
+
+                    let div = document.createElement("div");
+                    div.innerHTML = k.content;
+                    Array.from(div.children, c => {
+                        //console.log(c.nodeName)
+                        let n = c.nodeName;
+                        if (n == "H2" || n == "H3" || n == "H4") {
+                            data.blocks.push({
+                                type: "header",
+                                data: {
+                                    text: "- " + c.innerText,
+                                    level: ~~n.replace("H", "")
+                                }
+                            });
+                        }
+
+                        if (n == "P") {
+                            data.blocks.push({
+                                type: "paragraph",
+                                data: {
+                                    text: c.innerText
+                                }
+                            });
+                        }
+
+                        if (n == "UL") {
+
+                            let lis = c.children
+
+                            data.blocks.push({
+                                type: "list",
+                                data: {
+                                    style: "unordered",
+                                    items: Array.from(lis, li => li.innerText)
+                                }
+                            });
+
+
+                        }
+
+                    })
+
+
+
+
+                });
+            };
+
+
+            const editor = new EditorJS({
+                autofocus: true,
+                placeholder: '开始你的创作~',
+                // logLevel: 'ERROR',
+                holderId: 'darksee-editor',
+                tools: {
+                    header: {
+                        class: Header,
+                        inlineToolbar: ['link', 'bold', 'italic']
+                    },
+                    list: {
+                        class: List,
+                        inlineToolbar: ['link', 'bold', 'italic']
+                    },
+                    image: {
+                        class: SimpleImage,
+                        inlineToolbar: ['link', 'bold', 'italic']
+                    },
+                    marker: Marker,
+                    //map: MapView,
+
+                    videoExtract: {
+                        class: VideoExtract,
+                        //inlineToolbar: ['link', 'bold', 'italic'],
+                        config: {
+                            output: "imgs2gif"
+                        }
+                    },
+                    imgs2gif: {
+                        class: Imgs2gif,
+                        inlineToolbar: ['link', 'bold', 'italic'],
+                        config: {
+                            workerURL: "editorjs/worker/gif.worker.js",
+                            output: "image"
+                        }
+                    },
+                    SmartCutView: SmartCutView,
+                    /*basic3d: {
+                        class: Basic3d
+                    }*/
+                },
+
+                onReady: () => {
+                    //console.log('Editor.js is ready to work!')
+                },
+
+                onChange: () => {
+                    //console.log('Now I know that Editor\'s content changed!')
+                },
+                onPaste: (event) => {
+                    /*
+                    
+                    const plainData = event.clipboardData.getData('text/plain');
+                    // let htmlData = e.clipboardData.getData('text/html');
+                    console.log(plainData)
+                    if (plainData.match(/data\:image\/.*\;base64\,/ig)) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+                        console.log(plainData)
+                    } */
+
+                    //console.log('Now I know that Editor\'s  onPaste!',event)
+                },
+                data: data
+
+            });
+
+            const mask = document.getElementById("mask");
+            let maskCanShow = true;
+            mask.addEventListener("click", e => {
+                e.preventDefault();
+                mask.style.display = "none";
+            });
+
+            const inputTitle = document.getElementById("title");
+            //console.log(data)
+            inputTitle.value = data.title || "";
+            inputTitle.addEventListener('focus', e => {
+                console.log(e)
+                e.preventDefault();
+                document.body.classList.add("disable-scroll");
+                setTimeout(() => {
+                    if (maskCanShow) {
+                        mask.style.display = "block";
+                        inputTitle.classList.add("x-input-focus");
+                    }
+                }, 200);
+            });
+            inputTitle.addEventListener('blur', e => {
+                e.preventDefault();
+                console.log(e);
+                document.body.classList.remove("disable-scroll");
+                maskCanShow = false;
+                mask.style.display = "none";
+                inputTitle.classList.remove("x-input-focus");
+                setTimeout(() => {
+                    maskCanShow = true;
+                }, 500);
+            });
+
+            const saveButton = document.getElementById('save-button');
+            const output = document.getElementById('output');
+            saveButton.addEventListener('click', e => {
+                e.preventDefault();
+                let title = inputTitle.value.trim();
+                //console.log(title)
+                if (!title) {
+                    maskCanShow = true;
+                    return inputTitle.focus();
+                };
+                editor.save().then(async savedData => {
+                    let doc = savedData;
+                    doc.title = title;
+                    let saveStatus = await add2Db(doc);
+                    if (saveStatus) {
+                        saveButton.innerText = "已保存";
+                        initMyNotes();
+                    } else {
+                        saveButton.innerText = "保存失败";
+                    }
+                });
+            });
+
+        };
+
+
+        let db = new zango.Db('x-editor', {
+            notes: ['time', 'blocks', 'version']
+        });
+        let notes = db.collection('notes');
+
+
+        async function add2Db(doc) {
+            return new Promise(function(resolve, reject) {
+                let id = md5(JSON.stringify(doc.blocks));
+                doc.id = id;
+                notes.findOne({
+                    id: id
+                }).then(odoc => {
+                    if (odoc) {
+                        //更新文章
+                        console.log("update--note", doc.title)
+                        notes.update({
+                            'id': id
+                        }, {
+                            $set: {
+                                'title': doc.title
+                            }
+                        }).then(() => {
+                            return resolve(true);
+                        }).catch(error => reject(error));
+                    } else {
+                        //新建文章
+                        console.log("create--note", doc.title)
+                        notes.insert([doc]).then(() => {
+                            return resolve(true);
+                        }).catch(error => reject(error));
+                    }
+                })
+
+            });
+        };
+
+
+        async function myNotes() {
+            let docs = [];
+            return new Promise(function(resolve, reject) {
+                notes.find().sort({
+                    time: -1
+                }).forEach(doc => docs.push(doc)).then(() => {
+                    resolve(docs);
+                }).catch(error => reject(error));
+
+            });
+        }
+
+        let myNotesBtn = document.getElementById("my-notes-button");
+        //console.log(notes.count())
+
+        let isInit = true;
+        notes.find().sort({
+            time: -1
+        }).forEach(doc => {
+            if (isInit) {
+                //console.log(doc)
+                init(doc);
+                isInit = false;
+            }
+        }).then(() => {
+
+        }).catch(error => reject(error));
+
+        async function initMyNotes() {
+            let docs = await myNotes();
+            myNotesBtn.setAttribute("count", docs.length);
+            myNotesBtn.classList.add("x-count-icon");
+        }
+
+        initMyNotes();
+    </script>
+</body>
+
+</html>
