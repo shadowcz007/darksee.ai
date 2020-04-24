@@ -1,3 +1,10 @@
+.DS_Store
+Thumbs.db
+
+node_modules/*
+
+dump/*
+
 # Logs
 logs
 *.log

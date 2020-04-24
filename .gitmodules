@@ -1,0 +1,33 @@
+[submodule "public/x-editorjs"]
+	path = public/x-editorjs
+	url = https://github.com/shadowcz007/x-editorjs.git
+[submodule "public/x-editor-tools/x-editor-basic-3d"]
+	path = public/x-editor-tools/x-editor-basic-3d
+	url = https://github.com/shadowcz007/x-editor-basic-3d.git
+[submodule "public/x-editor-tools/x-editor-header"]
+	path = public/x-editor-tools/x-editor-header
+	url = https://github.com/shadowcz007/x-editor-header.git
+[submodule "public/x-editor-tools/x-editor-image"]
+	path = public/x-editor-tools/x-editor-image
+	url = https://github.com/shadowcz007/x-editor-image.git
+[submodule "public/x-editor-tools/x-editor-smart-cut-image"]
+	path = public/x-editor-tools/x-editor-smart-cut-image
+	url = https://github.com/shadowcz007/x-editor-smart-cut-image.git
+[submodule "public/x-editor-tools/x-editor-recordscreen"]
+	path = public/x-editor-tools/x-editor-recordscreen
+	url = https://github.com/shadowcz007/x-editor-recordscreen.git
+[submodule "public/x-editor-tools/x-editor-imgs2gif"]
+	path = public/x-editor-tools/x-editor-imgs2gif
+	url = https://github.com/shadowcz007/x-editor-imgs2gif.git
+[submodule "public/x-editor-tools/x-editor-video-extract"]
+	path = public/x-editor-tools/x-editor-video-extract
+	url = https://github.com/shadowcz007/x-editor-video-extract.git
+[submodule "public/x-editor-tools/x-editor-link"]
+	path = public/x-editor-tools/x-editor-link
+	url = https://github.com/shadowcz007/x-editor-link.git
+[submodule "public/x-editor-tools/x-editor-list"]
+	path = public/x-editor-tools/x-editor-list
+	url = https://github.com/shadowcz007/x-editor-list.git
+[submodule "public/x-editor-tools/x-editor-marker"]
+	path = public/x-editor-tools/x-editor-marker
+	url = https://github.com/shadowcz007/x-editor-marker.git

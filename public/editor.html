@@ -26,14 +26,6 @@
             color: rgb(235, 235, 235);
         }
         
-        .dark-mode h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-            color: white;
-        }
-        
         a {
             text-decoration: none;
         }
@@ -128,6 +120,8 @@
         #darksee-editor {
             margin: 98px 12px;
             user-select: none;
+            height: 100vh;
+            width: 100%
         }
         
         #mask {
@@ -154,10 +148,64 @@
             position: absolute;
             right: 120px;
         }
+        
+        .my-notes-container {
+            display: flex!important;
+            /* flex-wrap: wrap; */
+            flex-direction: column;
+            overflow: scroll;
+            padding: 120px 44px;
+            align-items: center;
+        }
+        
+        .card {
+            width: 500px;
+            max-height: 112px;
+            background: white;
+            display: flex;
+            border-radius: 2px;
+            justify-content: space-around;
+            align-items: center;
+            border-bottom: 1px solid #e6e6e6;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            box-shadow: 0 0 12px 0px #c28b9d;
+            z-index: 99;
+        }
+        
+        .card h4 {
+            margin: 20px;
+            display: flex;
+            width: 100%;
+            /* line-height: 12; */
+            height: 44px;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .card p {
+            margin: 24px;
+            font-size: 12px;
+            font-weight: 300;
+            color: #bcbcbc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 132px;
+        }
+        
+        .card-selected {
+            background-color: #ff77a5;
+            color: white!important;
+        }
     </style>
     <!--<script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>-->
-    <script src="https://unpkg.com/zangodb@latest/dist/zangodb.min.js"></script>
+    <!-- <script src="https://unpkg.com/zangodb@latest/dist/zangodb.min.js"></script> -->
     <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+    <script src="https://cdn.bootcss.com/timeago.js/4.0.2/timeago.min.js"></script>
+    <script src="https://cdn.bootcss.com/dexie/3.0.0-rc.3/dexie.min.js"></script>
 </head>
 
 <body class="">
@@ -174,7 +222,7 @@
     <!--/HEADER-->
     <div id="mask"></div>
     <div id="darksee-editor"></div>
-    <pre id="output"></pre>
+
     <!--FOOTER-->
     <footer>
 
@@ -189,6 +237,7 @@
     <script src="editorjs/x-editor-imgs2gif/dist/bundle.js"></script>
     <script src="editorjs/x-editor-basic-3d/dist/bundle.js"></script>
     <script src="editorjs/x-editor-smart-cut-image/dist/bundle.js"></script>
+    <script src="editorjs/x-editor-recordscreen/dist/bundle.js"></script>
 
     <script src="editorjs/list/dist/bundle.js"></script>
     <script src="editorjs/map/dist/bundle.js"></script>
@@ -198,8 +247,6 @@
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.0"> </script>
 	 -->
-
-
 
     <!-- Place your code in the script tag below. You can also use an external .js file -->
     <script>
@@ -317,31 +364,170 @@ function parseKnowledgeData(k = {}) {
 
 
     <script>
-        /* let data = {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "time": 1585124085221,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "blocks": [{
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "type": "basic3d",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "data": {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "id": "82b2f012f383fb219bb77d5cc1e8c25b",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "code": "new Zdog.Ellipse({\n            addTo: this.illo,\n            diameter: 80,\n            translate: { z: -40 },\n            stroke: 40,\n            color: '#636',\n        });\n \nnew Zdog.Shape({\n            addTo: this.illo,\n            path: [\n                { x: 0, y: -32 },\n                { x: 32, y: 32 },\n                { x: -32, y: 32 },\n            ],\n            translate: { z: 40 },\n            color: '#E62',\n            stroke: 12,\n            fill: false,\n        });",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "success": true
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }],
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "version": "2.16.1"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */
-        //let data=
-        //data={}
+        class Dom {
+            constructor(opt) {
+                this.element = document.querySelector(opt.select);
+                this.opt = opt;
+                if (opt.click) this.element.addEventListener("click", opt.click, false);
+                if (opt.focus) this.element.addEventListener("focus", opt.focus, false);
+                if (opt.blur) this.element.addEventListener("blur", opt.blur, false);
 
-        // let data=JSON.parse(localStorage.getItem("test"));
-        // data.blocks.push({
-        // 		type: "image",
-        // 		data: {
-        // 		url: "https://cdn.pixabay.com/photo/2017/09/01/21/53/blue-2705642_1280.jpg"
-        // 		}
-        // 	});
+            }
+            setText(text) {
+                //console.log(this.element.tagName)
+                if (this.element.tagName == 'INPUT') {
+                    this.element.value = text;
+                } else {
+                    this.element.innerText = text;
+                }
+            }
+            getText() {
+                if (this.element.tagName == 'INPUT') {
+                    return this.element.value.trim();
+                } else {
+                    return this.element.innerText.trim();
+                }
+            }
+            setAttribute(attrName, value) {
+                this.element.setAttribute(attrName, value);
+            }
+            getAttribute(attrName) {
+                return this.element.getAttribute(attrName);
+            }
+            focus() {
+                if (this.opt.focus) this.element.focus();
+            }
+            click() {
+                if (this.opt.click) this.element.click();
+            }
+            blur() {
+                if (this.opt.blur) this.element.blur();
+            }
+            destroy() {
+                if (this.opt.click) this.element.removeEventListener("click", this.opt.click, false);
+                if (this.opt.focus) this.element.removeEventListener("focus", this.opt.focus, false);
+                if (this.opt.blur) this.element.removeEventListener("blur", this.opt.blur, false);
+                this.element.remove();
+                this.opt = null;
+            }
+            addClass(className) {
+                if (!(className in this.element.classList)) {
+                    this.element.classList.add(className);
+                }
+            }
+            removeClass(className) {
+                this.element.classList.remove(className);
+            }
+            hide() {
+                this.element.style.display = "none";
+            }
+            show() {
+                this.element.style.display = "block";
+            }
+        }
 
-        async function init(data) {
+        class Card {
+            constructor(opt) {
+                this.element = document.createElement("div");
+                this.element.classList.add("card");
+
+                this.index = document.createElement("p");
+                this.title = document.createElement("h4");
+                this.time = document.createElement("p");
+                this.wordCount = document.createElement("p");
+
+                this.element.appendChild(this.index);
+                this.element.appendChild(this.title);
+                this.element.appendChild(this.wordCount);
+                this.element.appendChild(this.time);
+
+
+                this.index.innerText = opt.index + 1;
+                this.title.innerText = opt.title;
+                this.time.innerText = opt.time;
+                this.wordCount.innerText = opt.wordCount || '-';
+
+                if (opt.selected) {
+                    this.index.innerText = "当前";
+                    this.index.classList.add("card-selected");
+                }
+
+            }
+
+            on(_type, _fun) {
+                this.element.addEventListener(_type, _fun);
+            }
+
+        }
+
+        class Db {
+            static getInstance(...arg) {
+                if (!Db.instance) Db.instance = new Db(arg);
+                return Db.instance;
+            }
+            constructor() {
+                this.db = new Dexie("x-editor");
+                this.db.version(1).stores({
+                    notes: 'id,time,blocks,version,title'
+                });
+                this.openId = null;
+                console.log('运行一次', this.db)
+            }
+            async initOpen() {
+                let d = await this.getByPageNum(0, 1);
+                //console.log(d)
+                if (d.length > 0) {
+                    d = d[0];
+                    this.openId = d.id;
+                } else {
+                    d = null;
+                };
+                return d;
+            }
+            async update(doc) {
+                //console.log(doc)
+                if (this.openId == null) {
+                    this.openId = md5(JSON.stringify(doc));
+                };
+
+                doc.wordCount = document.querySelector('#darksee-editor').innerText.trim().length;
+
+                doc.id = this.openId;
+
+                let oDoc = await this.db.notes.get({
+                    id: doc.id
+                });
+                //console.log(oDoc)
+                let status;
+                //新建文章
+                if (!oDoc) {
+                    status = await this.db.notes.put(doc);
+                } else {
+                    status = await this.db.notes.update(doc.id, doc);
+                };
+                return status;
+            }
+            async get(id) {
+                let oDoc = await this.db.notes.get({
+                    id: id
+                });
+                return oDoc;
+            }
+            async count() {
+                return await this.db.notes.count();
+            }
+            async getByPageNum(pageNum = 0, pageSize = 9) {
+                return await this.db.notes
+                    .orderBy("time")
+                    .reverse()
+                    .offset(pageNum * pageSize)
+                    .limit(pageSize)
+                    .toArray();
+            }
+        };
+
+
+        async function initData(data) {
             if (!data) {
                 data = {
                     time: 1585124085221,
@@ -432,207 +618,228 @@ function parseKnowledgeData(k = {}) {
 
                 });
             };
+            return data;
+        }
 
+        class UI {
+            static getInstance(...arg) {
+                if (!UI.instance) UI.instance = new UI(arg);
+                return UI.instance;
+            }
+            constructor() {
+                this.isInit = false;
+            }
 
-            const editor = new EditorJS({
-                autofocus: true,
-                placeholder: '开始你的创作~',
-                // logLevel: 'ERROR',
-                holderId: 'darksee-editor',
-                tools: {
-                    header: {
-                        class: Header,
-                        inlineToolbar: ['link', 'bold', 'italic']
-                    },
-                    list: {
-                        class: List,
-                        inlineToolbar: ['link', 'bold', 'italic']
-                    },
-                    image: {
-                        class: SimpleImage,
-                        inlineToolbar: ['link', 'bold', 'italic']
-                    },
-                    marker: Marker,
-                    //map: MapView,
+            init(data) {
 
-                    videoExtract: {
-                        class: VideoExtract,
-                        //inlineToolbar: ['link', 'bold', 'italic'],
-                        config: {
-                            output: "imgs2gif"
-                        }
-                    },
-                    imgs2gif: {
-                        class: Imgs2gif,
-                        inlineToolbar: ['link', 'bold', 'italic'],
-                        config: {
-                            workerURL: "editorjs/worker/gif.worker.js",
-                            output: "image"
-                        }
-                    },
-                    SmartCutView: SmartCutView,
-                    /*basic3d: {
-                        class: Basic3d
-                    }*/
-                },
+                if (this.isInit) return;
 
-                onReady: () => {
-                    //console.log('Editor.js is ready to work!')
-                },
+                this.editor = new EditorJS({
+                    //autofocus: true,
+                    placeholder: '开始你的创作~',
+                    // logLevel: 'ERROR',
+                    holderId: 'darksee-editor',
+                    tools: {
+                        header: {
+                            class: Header,
+                            inlineToolbar: ['link', 'bold', 'italic']
+                        },
+                        list: {
+                            class: List,
+                            inlineToolbar: ['link', 'bold', 'italic']
+                        },
+                        image: {
+                            class: SimpleImage,
+                            inlineToolbar: ['link', 'bold', 'italic']
+                        },
+                        marker: Marker,
+                        //map: MapView,
 
-                onChange: () => {
-                    //console.log('Now I know that Editor\'s content changed!')
-                },
-                onPaste: (event) => {
-                    /*
-                    
-                    const plainData = event.clipboardData.getData('text/plain');
-                    // let htmlData = e.clipboardData.getData('text/html');
-                    console.log(plainData)
-                    if (plainData.match(/data\:image\/.*\;base64\,/ig)) {
-                        event.preventDefault();
-                        event.stopImmediatePropagation();
+                        videoExtract: {
+                            class: VideoExtract,
+                            //inlineToolbar: ['link', 'bold', 'italic'],
+                            config: {
+                                output: "imgs2gif"
+                            }
+                        },
+                        imgs2gif: {
+                            class: Imgs2gif,
+                            inlineToolbar: ['link', 'bold', 'italic'],
+                            config: {
+                                workerURL: "editorjs/worker/gif.worker.js",
+                                output: "image"
+                            }
+                        },
+                        smartCutView: SmartCutView,
+                        recordScreen: RecordScreen
+                            /*basic3d: {
+                                class: Basic3d
+                            }*/
+                    },
+
+                    onReady: () => {
+                        //console.log('Editor.js is ready to work!')
+                    },
+
+                    onChange: () => {
+                        console.log('Editor\'s content changed!');
+                    },
+                    onPaste: (event) => {
+                        /*
+                        
+                        const plainData = event.clipboardData.getData('text/plain');
+                        // let htmlData = e.clipboardData.getData('text/html');
                         console.log(plainData)
-                    } */
+                        if (plainData.match(/data\:image\/.*\;base64\,/ig)) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            console.log(plainData)
+                        } */
 
-                    //console.log('Now I know that Editor\'s  onPaste!',event)
-                },
-                data: data
+                        //console.log('Now I know that Editor\'s  onPaste!',event)
+                    },
+                    data: data
+                });
 
-            });
-
-            const mask = document.getElementById("mask");
-            let maskCanShow = true;
-            mask.addEventListener("click", e => {
-                e.preventDefault();
-                mask.style.display = "none";
-            });
-
-            const inputTitle = document.getElementById("title");
-            //console.log(data)
-            inputTitle.value = data.title || "";
-            inputTitle.addEventListener('focus', e => {
-                console.log(e)
-                e.preventDefault();
-                document.body.classList.add("disable-scroll");
-                setTimeout(() => {
-                    if (maskCanShow) {
-                        mask.style.display = "block";
-                        inputTitle.classList.add("x-input-focus");
-                    }
-                }, 200);
-            });
-            inputTitle.addEventListener('blur', e => {
-                e.preventDefault();
-                console.log(e);
-                document.body.classList.remove("disable-scroll");
-                maskCanShow = false;
-                mask.style.display = "none";
-                inputTitle.classList.remove("x-input-focus");
-                setTimeout(() => {
-                    maskCanShow = true;
-                }, 500);
-            });
-
-            const saveButton = document.getElementById('save-button');
-            const output = document.getElementById('output');
-            saveButton.addEventListener('click', e => {
-                e.preventDefault();
-                let title = inputTitle.value.trim();
-                //console.log(title)
-                if (!title) {
-                    maskCanShow = true;
-                    return inputTitle.focus();
-                };
-                editor.save().then(async savedData => {
-                    let doc = savedData;
-                    doc.title = title;
-                    let saveStatus = await add2Db(doc);
-                    if (saveStatus) {
-                        saveButton.innerText = "已保存";
-                        initMyNotes();
-                    } else {
-                        saveButton.innerText = "保存失败";
+                this.newNoteBtn = new Dom({
+                    select: "#new-note-button",
+                    click: (event) => {
+                        event.preventDefault();
+                        this.inputTitle.setText("");
+                        this.editor.clear();
+                        Db.getInstance().openId = null;
                     }
                 });
-            });
 
-        };
-
-
-        let db = new zango.Db('x-editor', {
-            notes: ['time', 'blocks', 'version']
-        });
-        let notes = db.collection('notes');
-
-
-        async function add2Db(doc) {
-            return new Promise(function(resolve, reject) {
-                let id = md5(JSON.stringify(doc.blocks));
-                doc.id = id;
-                notes.findOne({
-                    id: id
-                }).then(odoc => {
-                    if (odoc) {
-                        //更新文章
-                        console.log("update--note", doc.title)
-                        notes.update({
-                            'id': id
-                        }, {
-                            $set: {
-                                'title': doc.title
-                            }
-                        }).then(() => {
-                            return resolve(true);
-                        }).catch(error => reject(error));
-                    } else {
-                        //新建文章
-                        console.log("create--note", doc.title)
-                        notes.insert([doc]).then(() => {
-                            return resolve(true);
-                        }).catch(error => reject(error));
+                this.mask = new Dom({
+                    select: "#mask",
+                    click: e => {
+                        e.preventDefault();
+                        //console.log(this.inputTitle)
+                        document.body.classList.remove("disable-scroll");
+                        this.mask.element.innerHTML = '';
+                        this.mask.hide();
+                        this.mask.removeClass("my-notes-container");
+                        this.maskCanShow = true;
                     }
-                })
+                });
 
-            });
+                this.maskCanShow = true;
+
+                this.inputTitle = new Dom({
+                    select: "#title",
+                    focus: e => {
+                        //console.log(e)
+                        e.preventDefault();
+                        document.body.classList.add("disable-scroll");
+                        setTimeout(() => {
+                            if (this.maskCanShow) {
+                                this.mask.show();
+                                this.inputTitle.addClass("x-input-focus");
+                            }
+                        }, 200);
+                    },
+                    blur: e => {
+                        e.preventDefault();
+                        //console.log(e);
+                        document.body.classList.remove("disable-scroll");
+                        this.maskCanShow = false;
+                        this.mask.hide();
+                        this.inputTitle.removeClass("x-input-focus");
+                        setTimeout(() => {
+                            this.maskCanShow = true;
+                        }, 500);
+                    }
+                });
+
+                this.inputTitle.setText(data.title || "");
+
+                this.saveButton = new Dom({
+                    select: "#save-button",
+                    click: e => {
+                        e.preventDefault();
+                        let title = this.inputTitle.getText();
+                        //console.log(title)
+                        if (!title) {
+                            this.maskCanShow = true;
+                            return this.inputTitle.focus();
+                        };
+                        this.editor.save().then(async savedData => {
+                            let doc = savedData;
+                            doc.title = title;
+                            let saveStatus = await Db.getInstance().update(doc);
+                            //console.log(saveStatus)
+                            if (saveStatus) {
+                                this.saveButton.setText("已保存");
+                                this.updateMyNotesCount();
+                            } else {
+                                this.saveButton.setText("保存失败");
+                            }
+                        });
+                    }
+                });
+
+                this.myNotesBtn = new Dom({
+                    select: "#my-notes-button",
+                    click: async e => {
+                        e.preventDefault();
+                        this.mask.element.innerHTML = ``;
+                        let docs = await Db.getInstance().getByPageNum(0);
+                        docs = Array.from(docs, (doc, index) => {
+                            doc.timeText = timeago.format(doc.time, 'zh_CN');
+                            let title = doc.title,
+                                time = doc.timeText;
+                            let c = new Card({
+                                index,
+                                title,
+                                time,
+                                wordCount: doc.wordCount,
+                                selected: Db.getInstance().openId == doc.id
+                            });
+                            c.on("click", async(e) => {
+                                e.preventDefault();
+                                let openDoc = await Db.getInstance().get(doc.id);
+                                if (openDoc) {
+                                    Db.getInstance().openId = openDoc.id;
+                                    this.inputTitle.setText(openDoc.title);
+                                    this.editor.render(openDoc);
+                                };
+                            });
+                            this.mask.element.appendChild(c.element);
+                            return doc;
+                        });
+                        //console.log('myNotesBtn', docs);
+                        this.mask.show();
+                        document.body.classList.add("disable-scroll");
+                        this.mask.addClass("my-notes-container");
+                    }
+                });
+
+                this.isInit = true;
+            }
+
+            async initMyNotes() {
+                let doc = await Db.getInstance().initOpen();
+                let count = await Db.getInstance().count();
+                let data = await initData(doc);
+                await this.init(data);
+                this.myNotesBtn.setAttribute("count", count);
+                if (count > 0) {
+                    this.myNotesBtn.addClass("x-count-icon");
+                }
+            };
+
+            async updateMyNotesCount() {
+                let count = await Db.getInstance().count();
+                this.myNotesBtn.setAttribute("count", count);
+                if (count > 0) {
+                    this.myNotesBtn.addClass("x-count-icon");
+                }
+            }
+
         };
 
-
-        async function myNotes() {
-            let docs = [];
-            return new Promise(function(resolve, reject) {
-                notes.find().sort({
-                    time: -1
-                }).forEach(doc => docs.push(doc)).then(() => {
-                    resolve(docs);
-                }).catch(error => reject(error));
-
-            });
-        }
-
-        let myNotesBtn = document.getElementById("my-notes-button");
-        //console.log(notes.count())
-
-        let isInit = true;
-        notes.find().sort({
-            time: -1
-        }).forEach(doc => {
-            if (isInit) {
-                //console.log(doc)
-                init(doc);
-                isInit = false;
-            }
-        }).then(() => {
-
-        }).catch(error => reject(error));
-
-        async function initMyNotes() {
-            let docs = await myNotes();
-            myNotesBtn.setAttribute("count", docs.length);
-            myNotesBtn.classList.add("x-count-icon");
-        }
-
-        initMyNotes();
+        UI.getInstance().initMyNotes();
     </script>
 </body>
 
