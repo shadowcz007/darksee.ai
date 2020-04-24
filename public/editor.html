@@ -666,7 +666,7 @@ function parseKnowledgeData(k = {}) {
                             class: Imgs2gif,
                             inlineToolbar: ['link', 'bold', 'italic'],
                             config: {
-                                workerURL: "editorjs/worker/gif.worker.js",
+                                workerURL: "x-editor-tools/x-editor-imgs2gif/dist/gif.worker.js",
                                 output: "image"
                             }
                         },
@@ -783,6 +783,7 @@ function parseKnowledgeData(k = {}) {
                     select: "#my-notes-button",
                     click: async e => {
                         e.preventDefault();
+                        if(await Db.getInstance().count()==0)return;
                         this.mask.element.innerHTML = ``;
                         let docs = await Db.getInstance().getByPageNum(0);
                         docs = Array.from(docs, (doc, index) => {
