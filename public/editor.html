@@ -216,7 +216,7 @@
         <input id="title" class="x-input x-base-background" placeholder="请输入标题" autocomplete="off" />
         <button id="save-button" class="x-button x-base-background">保存</button>
 
-        <button id="new-note-button" class="x-button x-base-background">新建文章</button>
+        <a id="new-note-button" class="x-button x-base-background" href="#">新建文章</a>
         <button id="my-notes-button" class="x-button x-base-background">我的文章</button>
     </header>
     <!--/HEADER-->
@@ -238,6 +238,7 @@
     <script src="x-editor-tools/x-editor-basic-3d/dist/bundle.js"></script>
     <script src="x-editor-tools/x-editor-smart-cut-image/dist/bundle.js"></script>
     <script src="x-editor-tools/x-editor-recordscreen/dist/bundle.js"></script>
+    <script src="x-editor-tools/x-editor-smart-content-planning/dist/bundle.js"></script>
 
     <script src="x-editor-tools/x-editor-list/dist/bundle.js"></script>
     <!-- <script src="x-editor-tools/map/dist/bundle.js"></script> -->
@@ -634,11 +635,13 @@ function parseKnowledgeData(k = {}) {
 
                 if (this.isInit) return;
 
+                this.id="darksee-editor";
+
                 this.editor = new EditorJS({
                     //autofocus: true,
                     placeholder: '开始你的创作~',
                     // logLevel: 'ERROR',
-                    holderId: 'darksee-editor',
+                    holderId: this.id,
                     tools: {
                         header: {
                             class: Header,
@@ -671,10 +674,14 @@ function parseKnowledgeData(k = {}) {
                             }
                         },
                         smartCutView: SmartCutView,
-                        recordScreen: RecordScreen
+                        recordScreen: {class:RecordScreen,
+                        config:{
+                            modelPath:"x-editor-tools/x-editor-recordscreen/weights/"
+                        }},
                             /*basic3d: {
                                 class: Basic3d
                             }*/
+                        smartContentPlanning:SmartContentPlanning
                     },
 
                     onReady: () => {
@@ -707,6 +714,9 @@ function parseKnowledgeData(k = {}) {
                         event.preventDefault();
                         this.inputTitle.setText("");
                         this.editor.clear();
+                        this.editor.focus();
+                        this.editor.caret.setToFirstBlock()
+                        //console.log(this.editor)
                         Db.getInstance().openId = null;
                     }
                 });

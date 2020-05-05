@@ -31,3 +31,6 @@
 [submodule "public/x-editor-tools/x-editor-marker"]
 	path = public/x-editor-tools/x-editor-marker
 	url = https://github.com/shadowcz007/x-editor-marker.git
+[submodule "public/x-editor-tools/x-editor-smart-content-planning"]
+	path = public/x-editor-tools/x-editor-smart-content-planning
+	url = https://github.com/shadowcz007/x-editor-smart-content-planning.git
