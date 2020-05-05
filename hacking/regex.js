@@ -6,18 +6,13 @@ class MyRegex {
     constructor() {
         console.log('运行一次')
     }
+
     matchOne(pattern, text) {
         if (!pattern) return true;
         if (!text) return false;
         return pattern === "." || text === pattern;
     }
-    search(pattern, text) {
-        if (pattern[0] === "^") {
-            return this.match(pattern.slice(1), text);
-        } else {
-            return this.match(".*" + pattern, text);
-        }
-    }
+
     match(pattern, text) {
         if (!pattern) return true;
         else if (!text && pattern === "$") return true;
@@ -31,6 +26,15 @@ class MyRegex {
             return this.matchOne(pattern[0], text[0]) && this.match(pattern.slice(1), text.slice(1));
         }
     }
+
+    search(pattern, text) {
+        if (pattern[0] === "^") {
+            return this.match(pattern.slice(1), text);
+        } else {
+            return this.match(".*" + pattern, text);
+        }
+    }
+
     matchQuestion(pattern, text) {
         return (
             (this.matchOne(pattern[0], text[0]) && this.match(pattern.slice(2), text.slice(1))) ||
