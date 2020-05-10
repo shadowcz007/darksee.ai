@@ -691,8 +691,9 @@ function parseKnowledgeData(k = {}) {
                         //console.log('Editor.js is ready to work!')
                     },
 
-                    onChange: () => {
+                    onChange: (e) => {
                         console.log('Editor\'s content changed!');
+
                     },
                     onPaste: (event) => {
                         /*
