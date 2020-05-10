@@ -201,6 +201,7 @@
             color: white!important;
         }
     </style>
+    <link rel="stylesheet" href="x-editor-tools/x-editor-header/dist/dropdown.css">
     <!--<script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>-->
     <!-- <script src="https://unpkg.com/zangodb@latest/dist/zangodb.min.js"></script> -->
     <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
@@ -635,7 +636,7 @@ function parseKnowledgeData(k = {}) {
 
                 if (this.isInit) return;
 
-                this.id="darksee-editor";
+                this.id = "darksee-editor";
 
                 this.editor = new EditorJS({
                     //autofocus: true,
@@ -674,14 +675,16 @@ function parseKnowledgeData(k = {}) {
                             }
                         },
                         smartCutView: SmartCutView,
-                        recordScreen: {class:RecordScreen,
-                        config:{
-                            modelPath:"x-editor-tools/x-editor-recordscreen/weights/"
-                        }},
-                            /*basic3d: {
-                                class: Basic3d
-                            }*/
-                        smartContentPlanning:SmartContentPlanning
+                        recordScreen: {
+                            class: RecordScreen,
+                            config: {
+                                modelPath: "x-editor-tools/x-editor-recordscreen/weights/"
+                            }
+                        },
+                        /*basic3d: {
+                            class: Basic3d
+                        }*/
+                        smartContentPlanning: SmartContentPlanning
                     },
 
                     onReady: () => {
@@ -716,7 +719,7 @@ function parseKnowledgeData(k = {}) {
                         this.editor.clear();
                         this.editor.focus();
                         this.editor.caret.setToFirstBlock()
-                        //console.log(this.editor)
+                            //console.log(this.editor)
                         Db.getInstance().openId = null;
                     }
                 });
@@ -793,7 +796,7 @@ function parseKnowledgeData(k = {}) {
                     select: "#my-notes-button",
                     click: async e => {
                         e.preventDefault();
-                        if(await Db.getInstance().count()==0)return;
+                        if (await Db.getInstance().count() == 0) return;
                         this.mask.element.innerHTML = ``;
                         let docs = await Db.getInstance().getByPageNum(0);
                         docs = Array.from(docs, (doc, index) => {
@@ -851,6 +854,10 @@ function parseKnowledgeData(k = {}) {
         };
 
         UI.getInstance().initMyNotes();
+
+
+        //worker
+        //let worker = new Worker('./js/worker.js');
     </script>
 </body>
 
